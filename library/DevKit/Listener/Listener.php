@@ -25,14 +25,6 @@ class DevKit_Listener_Listener
         }
     }
 
-
-    public static function templateCreate(&$templateName, array &$params, XenForo_Template_Abstract $template)
-    {
-        if ($templateName == 'PAGE_CONTAINER' && $template instanceof XenForo_Template_Admin) {
-            $template->addRequiredExternal('css', 'devkit');
-        }
-    }
-
     public static function templatePostRender($templateName, &$content, array &$containerData, XenForo_Template_Abstract $template)
     {
         if ($templateName == 'phrase_list' && $template instanceof XenForo_Template_Admin) {
