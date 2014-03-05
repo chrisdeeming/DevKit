@@ -4,32 +4,6 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
-    <template title="devkit.css"><![CDATA[.xenForm {
-    width: 95% !important;
-}
-
-.xenForm .ctrlUnit.fullWidth dd .textCtrl, .xenForm .ctrlUnit.fullWidth dd .mceLayout {
-    width: 95% !important;
-}
-
-textarea.textCtrl.code {
-    min-height:500px;
-}
-
-#contentContainer
-{
-        width: 90%  !important;
-}
-
-	#content
-	{
-		width: 90% !important;
-	}
-
-.pageWidth
-{
-	width: 95% !important;
-}]]></template>
     <template title="devkit_phrase_filters"><![CDATA[<div class="Popup">
     <span class="muted">{xen:phrase add_on}:</span> <a rel="Menu">{xen:if $addOn, '{$addOn.title}', 'All'}</a>
     <div class="Menu">
