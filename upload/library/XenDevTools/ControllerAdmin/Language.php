@@ -1,6 +1,6 @@
 <?php
 
-class DevKit_ControllerAdmin_Language extends XFCP_DevKit_ControllerAdmin_Language
+class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAdmin_Language
 {
 
     /**

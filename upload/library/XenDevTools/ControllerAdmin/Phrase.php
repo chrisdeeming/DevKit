@@ -1,6 +1,6 @@
 <?php
 
-class DevKit_ControllerAdmin_Phrase extends XFCP_DevKit_ControllerAdmin_Phrase
+class XenDevTools_ControllerAdmin_Phrase extends XFCP_XenDevTools_ControllerAdmin_Phrase
 {
 
     protected function _getPhraseAddEditResponse(array $phrase, $inputLanguageId, $inputPhraseId = 0)

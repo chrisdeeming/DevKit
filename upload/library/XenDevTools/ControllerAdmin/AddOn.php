@@ -5,7 +5,7 @@
  *
  * @package XenForo_AddOns
  */
-class DevKit_ControllerAdmin_AddOn extends XFCP_DevKit_ControllerAdmin_AddOn
+class XenDevTools_ControllerAdmin_AddOn extends XFCP_XenDevTools_ControllerAdmin_AddOn
 {
 
 	/**

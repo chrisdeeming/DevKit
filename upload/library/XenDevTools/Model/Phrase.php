@@ -5,7 +5,7 @@
  *
  * @package XenForo_Phrase
  */
-class DevKit_Model_Phrase extends XFCP_DevKit_Model_Phrase
+class XenDevTools_Model_Phrase extends XFCP_XenDevTools_Model_Phrase
 {
     public function getAllPhrasesInMasterLanguage()
     {
