@@ -16,8 +16,10 @@ class XenDevTools_Model_AddOn extends XFCP_XenDevTools_Model_AddOn
 	{
 		try
 		{
-			@mkdir($destination, $mode = 0777, $recursive = true);
+			XenForo_Helper_File::createDirectory($destination);
 			$directory = dir($source);
+
+			XenForo_Helper_File::makeWritableByFtpUser($directory);
 		}
 		catch (Exception $e)
 		{

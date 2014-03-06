@@ -23,7 +23,7 @@ class XenDevTools_ControllerAdmin_AddOn extends XFCP_XenDevTools_ControllerAdmin
 		{
 			$addOn = $addOnModel->getAddOnById($addOnId);
 
-			$buildLocation = 'addon-prestage/';
+			$buildLocation = XenForo_Application::get('config')->internalDataPath . '/addons/';
 
 			$addOn['addon_id_library'] = str_replace('_', '/', $addOn['addon_id']);
 			$addOn['addon_id_js'] = strtolower(str_replace('_', '/', $addOn['addon_id']));
