@@ -4,6 +4,95 @@
   <admin_permissions/>
   <admin_style_properties/>
   <admin_templates>
+    <template title="addon_builder_index"><![CDATA[<xen:title>{xen:phrase addon_builder}</xen:title>
+
+<xen:navigation>
+	<xen:breadcrumb href="{xen:adminlink 'add-ons/build'}">{xen:phrase addon_builder}</xen:breadcrumb>
+</xen:navigation>
+
+<xen:require css="filter_list.css" />
+<xen:require js="js/xenforo/filter_list.js" />
+
+<xen:if is="{$addOns}">
+	<div style="margin-bottom: 15px;">{xen:phrase click_one_of_the_installed_addons_below_explain}</div>
+	<h2 class="subHeading">
+		{xen:phrase choose_an_addon}
+	</h2>
+	
+	<ol class="FilterList">
+		<xen:foreach loop="$addOns" key="$addOnId" value="$addOn">
+			<xen:listitem id="{$addOn.addon_id}"
+			label="{$addOn.title}"
+			snippet="{$addOn.version_string}"
+			href="{xen:adminlink 'add-ons/build', $addOn}"
+			linkclass="OverlayTrigger"
+			tooltip="{xen:phrase add_on_id_version_id, 'addon_id={$addOn.addon_id}', 'version_id={$addOn.version_id}'}">
+				<xen:popup title="{xen:phrase controls}" ctrlclass="toolsCtrl">
+					<xen:link href="{xen:adminlink 'add-ons/edit', $addOn}" displayif="{$canAccessDevelopment}">{xen:phrase edit}</xen:link>
+					<xen:link href="{xen:adminlink 'add-ons/export', $addOn}" displayif="{$canAccessDevelopment}">{xen:phrase export}</xen:link>
+				</xen:popup>
+			</xen:listitem>
+		</xen:foreach>
+	</ol>
+	
+	<p class="sectionFooter">{xen:phrase showing_x_of_y_items, 'count=<span class="FilterListCount">{xen:count $addOns}</span>', 'total={xen:count $addOns}'}</p>
+	
+	<xen:else />
+	<div class="noResults">{xen:phrase no_add_ons_have_been_installed_yet}</div>
+</xen:if>]]></template>
+    <template title="addon_builder_overlay"><![CDATA[<xen:title>{xen:phrase build_add_on}: {$addOn.title}</xen:title>
+
+<xen:form action="{xen:adminlink 'add-ons/builder', $addOn}">
+	<xen:textboxunit label="{xen:phrase addon_build_location}:" name="build_location" value="{$buildLocation}" explain="{xen:phrase build_path_trailing_slash}" />
+
+	<xen:controlunit label="{xen:phrase build_from_which_directories}:">
+		<ul>
+			<li>
+				<label>
+					<input type="checkbox" name="library_check" value="1" class="Disabler" id="dir_library" {xen:checked $addOn.libraryDirExists} />
+					{xen:phrase library_directory} (/library/...):
+				</label>
+				<div class="libraryDirectory" id="dir_library_Disabler">
+					<xen:textbox name="library_dir" value="{$addOn.addon_id_library}" />
+				</div>
+			</li>
+			<li>
+				<label>
+					<input type="checkbox" name="js_check" value="1" class="Disabler" id="dir_js" {xen:checked $addOn.jsDirExists} />
+					{xen:phrase js_directory} (/js/...):
+				</label>
+				<div class="jsDirectory" id="dir_js_Disabler">
+					<xen:textbox name="js_dir" value="{$addOn.addon_id_js}" />
+					<label for="js_min">&nbsp; &nbsp;<input type="checkbox" name="js_min" value="1" class="Disabler" id="js_min" /> {xen:phrase addon_builder_minify_js}</label>
+				</div>
+			</li>
+			<li>
+				<label>
+					<input type="checkbox" name="styles_check" value="1" class="Disabler" id="dir_styles" {xen:checked $addOn.styleDirExists} />
+					{xen:phrase styles_directory} (/styles/...):
+				</label>
+				<div class="stylesDirectory" id="dir_styles_Disabler">
+					<xen:textbox name="styles_dir" value="{$addOn.addon_id_style}" />
+				</div>
+			</li>
+			<li>
+				<label>
+					<input type="checkbox" name="custom_files_check" value="1" class="Disabler" id="files_custom" {xen:checked $addOn.customFiles} />
+					{xen:phrase custom_files}:				
+				</label>
+				<div class="customFiles" id="files_custom_Disabler">
+					<xen:textbox name="custom_files" value="{$addOn.customFiles}" rows="3" />
+					<p class="explain">{xen:phrase custom_files_explain}</p>
+				</div>
+			</li>	
+		</ul>
+	</xen:controlunit>
+		
+	<xen:submitunit save="{xen:phrase build_add_on}">
+		<input type="submit" name="download" value="{xen:phrase build_and_download}" class="button" />
+	</xen:submitunit>
+	<input type="hidden" name="_xfConfirm" value="1" />
+</xen:form>]]></template>
     <template title="devkit_phrase_filters"><![CDATA[<div class="Popup">
     <span class="muted">{xen:phrase add_on}:</span> <a rel="Menu">{xen:if $addOn, '{$addOn.title}', 'All'}</a>
     <div class="Menu">
@@ -34,6 +123,13 @@
 </div>]]></template>
   </admin_templates>
   <admin_template_modifications>
+    <modification template="addon_list" modification_key="AddOnBuilder_addon_list_build" description="Adds a build link to each list item" execution_order="10" enabled="1" action="str_replace">
+      <find><![CDATA[</xen:popup>]]></find>
+      <replace><![CDATA[$0
+<xen:html>
+	<a href="{xen:adminlink add-ons/build, $addOn}" class="secondaryContent OverlayTrigger" data-cacheoverlay="false">{xen:phrase build}...</a>
+</xen:html>]]></replace>
+    </modification>
     <modification template="phrase_list" modification_key="XenDevTools_phrase_list" description="Adds the top choosers to the phrase list" execution_order="10" enabled="1" action="preg_replace">
       <find><![CDATA[#<div class="topChoosers">.*?</ul>\s*?</div>\s*?</div>#s]]></find>
       <replace><![CDATA[$0
@@ -52,10 +148,11 @@ $0
   </admin_template_modifications>
   <code_events/>
   <code_event_listeners>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="XenDevTools_Listener_Listener" callback_method="extendAddOnController" active="1" hint="XenForo_ControllerAdmin_AddOn" description="Extends the add-on controller"/>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="XenDevTools_Listener_Listener" callback_method="extendPhraseController" active="1" hint="XenForo_ControllerAdmin_Phrase" description="Extends the phrase controller"/>
-    <listener event_id="load_class_controller" execute_order="10" callback_class="XenDevTools_Listener_Listener" callback_method="extendLanguageController" active="1" hint="XenForo_ControllerAdmin_Language" description="Extends the language controller"/>
-    <listener event_id="load_class_model" execute_order="10" callback_class="XenDevTools_Listener_Listener" callback_method="extendPhraseModel" active="1" hint="XenForo_Model_Phrase" description="Extends the Phrase Model"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="XenDevTools_Listener" callback_method="extendAddOnController" active="1" hint="XenForo_ControllerAdmin_AddOn" description="Extends the add-on controller"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="XenDevTools_Listener" callback_method="extendPhraseController" active="1" hint="XenForo_ControllerAdmin_Phrase" description="Extends the phrase controller"/>
+    <listener event_id="load_class_controller" execute_order="10" callback_class="XenDevTools_Listener" callback_method="extendLanguageController" active="1" hint="XenForo_ControllerAdmin_Language" description="Extends the language controller"/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="XenDevTools_Listener" callback_method="extendAddOnModel" active="1" hint="XenForo_Model_AddOn" description="Extends the Add On Model."/>
+    <listener event_id="load_class_model" execute_order="10" callback_class="XenDevTools_Listener" callback_method="extendPhraseModel" active="1" hint="XenForo_Model_Phrase" description="Extends the Phrase Model"/>
   </code_event_listeners>
   <cron/>
   <email_templates/>
@@ -67,6 +164,21 @@ $0
     <interface_groups/>
   </permissions>
   <phrases>
+    <phrase title="addon_builder" version_id="1000070" version_string="1.0.0"><![CDATA[Add-on Builder]]></phrase>
+    <phrase title="addon_builder_cannot_build_zip_file" version_id="1000070" version_string="1.0.0"><![CDATA[Add-On Builder Cannot Build ZIP File.]]></phrase>
+    <phrase title="addon_builder_minify_js" version_id="1000070" version_string="1.0.0"><![CDATA[Minify JS]]></phrase>
+    <phrase title="addon_builder_source_file_x_cannot_be_loaded" version_id="1000070" version_string="1.0.0"><![CDATA[The source file {source} cannot be loaded. Make sure that the file exists at the given path.]]></phrase>
+    <phrase title="addon_build_location" version_id="1000070" version_string="1.0.0"><![CDATA[Add-on build location]]></phrase>
+    <phrase title="build" version_id="1000070" version_string="1.0.0"><![CDATA[Build]]></phrase>
+    <phrase title="build_add_on" version_id="1000070" version_string="1.0.0"><![CDATA[Build add-on]]></phrase>
+    <phrase title="build_and_download" version_id="1000070" version_string="1.0.0"><![CDATA[Build and Download]]></phrase>
+    <phrase title="build_from_which_directories" version_id="1000070" version_string="1.0.0"><![CDATA[Build the add-on from these directories]]></phrase>
+    <phrase title="build_path_trailing_slash" version_id="1000070" version_string="1.0.0"><![CDATA[Specify the build path (relative to your XenForo root). Please include the trailing slash]]></phrase>
+    <phrase title="choose_an_addon" version_id="1000070" version_string="1.0.0"><![CDATA[Choose an add-on]]></phrase>
+    <phrase title="click_one_of_the_installed_addons_below_explain" version_id="1000070" version_string="1.0.0"><![CDATA[Click on of the installed add-ons below to build. Specify the build location, and the names of your library, js and styles folders. Once the build is complete you will find a copy of your files plus a package of your add-on which is compatible with the add-on installer and containing the add-on XML file.]]></phrase>
+    <phrase title="could_not_copy_files_did_you_specify_correct_dir" version_id="1000070" version_string="1.0.0"><![CDATA[Could not copy the add-on files to the build directory. Did you specify the correct source directory?]]></phrase>
+    <phrase title="custom_files" version_id="1000070" version_string="1.0.0"><![CDATA[Custom Files]]></phrase>
+    <phrase title="custom_files_explain" version_id="1000070" version_string="1.0.0"><![CDATA[Specify additional file/files that should be included in the package.]]></phrase>
     <phrase title="devkit_addon_directory_not_found" version_id="1" version_string="1.00"><![CDATA[Can't find directory of the addon. </br>
 It is supposed to be '/library/{dirName}' or '/library/XXX/{dirName}'. </br>
 You may copy the files to the supposed dir to make it work.]]></phrase>
@@ -76,6 +188,10 @@ You may copy the files to the supposed dir to make it work.]]></phrase>
     <phrase title="devkit_found" version_id="0" version_string=""><![CDATA[Found in code]]></phrase>
     <phrase title="devkit_undefined" version_id="0" version_string=""><![CDATA[Undefined]]></phrase>
     <phrase title="devkit_untranslated" version_id="0" version_string=""><![CDATA[Untranslated]]></phrase>
+    <phrase title="js_directory" version_id="1000070" version_string="1.0.0"><![CDATA[Javascript Directory]]></phrase>
+    <phrase title="library_directory" version_id="1000070" version_string="1.0.0"><![CDATA[Library directory]]></phrase>
+    <phrase title="styles_directory" version_id="1000070" version_string="1.0.0"><![CDATA[Styles Directory]]></phrase>
+    <phrase title="your_addon_has_been_built" version_id="1000070" version_string="1.0.0"><![CDATA[Your add-on has been built]]></phrase>
   </phrases>
   <route_prefixes/>
   <style_properties/>

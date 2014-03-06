@@ -1,13 +1,7 @@
 <?php
 
-
-class XenDevTools_Listener_Listener
+class XenDevTools_Listener
 {
-	public static function extendPhraseModel($class, array &$extend)
-	{
-		$extend[] = 'XenDevTools_Model_Phrase';
-	}
-
 	public static function extendAddOnController($class, array &$extend)
 	{
 		$extend[] = 'XenDevTools_ControllerAdmin_AddOn';
@@ -21,6 +15,16 @@ class XenDevTools_Listener_Listener
 	public static function extendLanguageController($class, array &$extend)
 	{
 		$extend[] = 'XenDevTools_ControllerAdmin_Language';
+	}
+
+	public static function extendAddOnModel($class, array &$extend)
+	{
+		$extend[] = 'XenDevTools_Model_AddOn';
+	}
+
+	public static function extendPhraseModel($class, array &$extend)
+	{
+		$extend[] = 'XenDevTools_Model_Phrase';
 	}
 }
 
