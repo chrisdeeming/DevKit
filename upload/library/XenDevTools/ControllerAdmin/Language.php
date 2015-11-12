@@ -81,7 +81,7 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 
 			//$limitedFoundPhrases = $foundPhrases;
 
-			foreach ($foundPhrases as $phraseTitle)
+			foreach ($foundPhrases AS $phraseTitle)
 			{
 				$phrase = isset($allPhrases[$phraseTitle]) ? $allPhrases[$phraseTitle] : array('title' => $phraseTitle, 'phrase_state' => 'custom');
 				if (($phraseFilter == 'found') || ($phraseFilter == 'undefined' && !isset($allPhrases[$phraseTitle])))
@@ -112,7 +112,6 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 			XenForo_Helper_Cookie::setCookie('edit_addon_id', 'All');
 			XenForo_Helper_Cookie::setCookie('phrase_filter', 'existing');
 		}
-
 
 		$viewParams = array(
 			'phrases' => $phrases,
@@ -178,7 +177,7 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 			$xfEmailMods = XenForo_Model::create('XenForo_Model_EmailTemplateModification')->getModificationsByAddOnId($addOnId);
 		}
 
-		foreach ($modifications as &$modification)
+		foreach ($modifications AS &$modification)
 		{
 			$modification['template'] = $modification['replace_value'];
 		}
@@ -199,12 +198,12 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 
 	protected function _findPhrasesInTemplates($templates, array &$phrases)
 	{
-		foreach ($templates as $template)
+		foreach ($templates AS $template)
 		{
 			$code = $template['template'];
 			$result = preg_match_all('/\{xen\s*:\s*phrase[\s|\']*[\w]*[\s|\']*[\}|\,]/', $code, $found);
 			//print_r($result);
-			foreach ($found[0] as &$str)
+			foreach ($found[0] AS &$str)
 			{
 				$str = preg_replace('/\{xen\s*:\s*phrase[\s|\']*([\w]*)[\s|\']*[\}|\,]/', '$1', $str);
 				$phrases[] = $str;
@@ -223,16 +222,23 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 		$filePaths = array();
 		$this->_scanDir($addOnDir, $filePaths);
 
-		foreach ($filePaths as $filePath)
+		foreach ($filePaths AS $filePath)
 		{
 			$code = file_get_contents($filePath);
 			$result = preg_match_all('/XenForo_Phrase\s*\(\s*\'[\w]*\'\s*[\)|\,]/', $code, $found);
-			foreach ($found[0] as &$str)
+			$result2 = preg_match_all('/\$errorPhraseKey\s*\=\s*\'[\w]*\';/', $code, $found2);
+
+			foreach ($found[0] AS &$str)
 			{
 				$str = preg_replace('/XenForo_Phrase\s*\(\s*\'([\w]*)\'\s*[\)|\,]/', '$1', $str);
 				$phrases[] = $str;
 			}
 
+			foreach ($found2[0] AS &$str)
+			{
+				$str = preg_replace('/\$errorPhraseKey\s*\=\s*\'([\w]*)\';/', '$1', $str);
+				$phrases[] = $str;
+			}
 		}
 		return $phrases;
 	}
@@ -247,7 +253,7 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 			return $libraryDir;
 		}
 
-		foreach (scandir($libraryDir) as $filename1)
+		foreach (scandir($libraryDir) AS $filename1)
 		{
 			if (!is_dir($libraryDir . '/' . $filename1) || in_array($filename1, array('.', '..')))
 			{
@@ -259,7 +265,7 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 			}
 			else
 			{
-				foreach (scandir($libraryDir . '/' . $filename1) as $filename2)
+				foreach (scandir($libraryDir . '/' . $filename1) AS $filename2)
 				{
 					if (!is_dir($libraryDir . '/' . $filename1 . '/' . $filename2) || in_array($filename2, array('.', '..')))
 					{
@@ -278,7 +284,7 @@ class XenDevTools_ControllerAdmin_Language extends XFCP_XenDevTools_ControllerAd
 
 	protected function _scanDir($dir, array &$filePaths)
 	{
-		foreach (scandir($dir) as $filename)
+		foreach (scandir($dir) AS $filename)
 		{
 			if (is_dir($dir . '/' . $filename) && $filename != '.' && $filename != '..')
 			{

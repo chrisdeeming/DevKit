@@ -125,6 +125,12 @@ class XenDevTools_Helper_Minify
 	private function get_minified_data($data)
 	{
 		$compiler = XenForo_Helper_Http::getClient('http://closure-compiler.appspot.com/compile');
+		$compiler->setConfig(array(
+			'options' => array(
+				'use_ssl' => false
+			),
+			'timeout' => 600
+		));
 
 		$compiler->setMethod(Zend_Http_Client::POST);
 		$compiler->setParameterPost(array(
